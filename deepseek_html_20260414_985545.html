@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <meta name="theme-color" content="#C8AD8B">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>售後服務追蹤＋奶茶小遊戲 | 網頁版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #F7EFE1;
+            font-family: system-ui, -apple-system, 'Segoe UI', 'Inter', 'Roboto', sans-serif;
+            padding: 20px 16px 40px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* 卡片樣式 - 奶茶色系 */
+        .card {
+            background: #FFFBF5;
+            border-radius: 32px;
+            box-shadow: 0 8px 20px rgba(139, 89, 57, 0.08);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #EDDFC7;
+        }
+
+        h1 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 0.25rem;
+            color: #5E3A2C;
+        }
+
+        h1 span {
+            background: #F1E5D2;
+            padding: 6px 10px;
+            border-radius: 60px;
+            font-size: 1.5rem;
+        }
+
+        .sub {
+            color: #9B7B5C;
+            font-size: 0.85rem;
+            margin-bottom: 1.2rem;
+            border-left: 3px solid #D9B48B;
+            padding-left: 12px;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-left: 4px solid #D9B48B;
+            padding-left: 12px;
+            color: #5E3A2C;
+        }
+
+        .flex-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 140px;
+        }
+
+        label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #A27B5C;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 20px;
+            border: 1.5px solid #EADBC5;
+            background: #FFFFFF;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            outline: none;
+            font-family: inherit;
+            color: #4B3621;
+        }
+
+        input:focus, select:focus {
+            border-color: #C8AD8B;
+            box-shadow: 0 0 0 3px rgba(200, 173, 139, 0.25);
+        }
+
+        button {
+            background: #D9B48B;
+            color: white;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:active {
+            transform: scale(0.97);
+            background: #C8A27A;
+        }
+
+        .btn-outline {
+            background: #F4EDE2;
+            color: #8B5A3C;
+            border: 1px solid #E2D1BA;
+        }
+
+        .btn-outline:active {
+            background: #E8DCCB;
+        }
+
+        .search-bar {
+            background: #FFF8F0;
+            border-radius: 60px;
+            padding: 4px 16px 4px 20px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 1.2rem;
+            border: 1px solid #EDDFC7;
+        }
+        .search-bar input {
+            border: none;
+            background: transparent;
+            padding: 10px 0;
+        }
+        .search-bar input:focus {
+            box-shadow: none;
+        }
+        .search-bar button {
+            width: auto;
+            padding: 8px 16px;
+            border-radius: 40px;
+        }
+
+        /* 紀錄卡片 */
+        .record-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .record-item {
+            background: #FFFCF8;
+            border-radius: 24px;
+            padding: 14px 16px;
+            border: 1px solid #EFE2D2;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            transition: 0.1s;
+        }
+        .record-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+        .customer-name {
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: #5E3A2C;
+        }
+        .service-badge {
+            background: #F1E5D6;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #9B6E48;
+        }
+        .record-details {
+            font-size: 0.85rem;
+            color: #7C5D42;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 6px;
+        }
+        .record-details span {
+            background: #FBF5EA;
+            padding: 4px 10px;
+            border-radius: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .delete-btn {
+            background: #F5E0D0;
+            color: #AD6B3C;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            width: auto;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .delete-btn:active {
+            background: #EAD0BC;
+        }
+        .empty-msg {
+            text-align: center;
+            padding: 2rem;
+            color: #BC9A7A;
+        }
+        .stats {
+            background: #FCF6EC;
+            border-radius: 24px;
+            padding: 12px 16px;
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #7C5D42;
+            border: 1px solid #EDDFC7;
+        }
+        .install-guide {
+            background: #FCF3E6;
+            border-radius: 24px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 6px solid #D9B48B;
+            font-size: 0.85rem;
+            color: #6E4F34;
+        }
+
+        /* 小遊戲專屬樣式 */
+        .game-area {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .bubble {
+            font-size: 5rem;
+            cursor: pointer;
+            display: inline-block;
+            transition: transform 0.1s ease;
+            user-select: none;
+            filter: drop-shadow(0 8px 12px rgba(0,0,0,0.1));
+        }
+        .bubble:active {
+            transform: scale(0.9);
+        }
+        .game-score {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #D9B48B;
+            background: #FCF6EC;
+            display: inline-block;
+            padding: 8px 24px;
+            border-radius: 60px;
+            margin: 10px 0;
+        }
+        .game-highscore {
+            font-size: 0.9rem;
+            color: #9B7B5C;
+            margin-bottom: 12px;
+        }
+        .click-feedback {
+            position: fixed;
+            pointer-events: none;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #D9B48B;
+            text-shadow: 0 0 5px white;
+            z-index: 1000;
+            animation: floatUp 0.6s ease-out forwards;
+        }
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0px) scale(1); }
+            100% { opacity: 0; transform: translateY(-60px) scale(1.2); }
+        }
+        hr {
+            margin: 12px 0;
+            border-color: #EADBC5;
+        }
+        @media (max-width: 550px) {
+            .card { padding: 1.2rem; }
+            .flex-row { flex-direction: column; gap: 0.7rem; }
+            .record-header { flex-direction: column; align-items: flex-start; gap: 6px; }
+            .bubble { font-size: 4rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- 安裝指引 -->
+    <div class="install-guide">
+        📲 <strong>安裝到手機桌面</strong> ｜ Safari/Chrome 點分享圖示 → 加入主畫面，即可像 App 使用。<br>
+        ✅ 所有資料自動儲存在本機，關閉也不會遺失。🎮 下方還有奶茶小遊戲！
+    </div>
+
+    <!-- 主要表單卡片：新增售後服務紀錄 -->
+    <div class="card">
+        <h1><span>🛠️</span> 售後服務追蹤</h1>
+        <div class="sub">記錄客戶購買與服務歷程，提升回購率</div>
+
+        <div class="flex-row">
+            <div class="form-group">
+                <label>📅 服務日期</label>
+                <input type="date" id="serviceDate" value="">
+            </div>
+            <div class="form-group">
+                <label>📅 原購買日期</label>
+                <input type="date" id="purchaseDate" value="">
+            </div>
+        </div>
+
+        <div class="flex-row">
+            <div class="form-group">
+                <label>🧑‍🦰 客戶姓名</label>
+                <input type="text" id="customerName" placeholder="例：陳美華" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label>📞 聯絡電話 (選填)</label>
+                <input type="tel" id="customerPhone" placeholder="手機 / 市話" autocomplete="off">
+            </div>
+        </div>
+
+        <div class="flex-row">
+            <div class="form-group">
+                <label>🏷️ 購買產品</label>
+                <input type="text" id="productName" placeholder="例：纖纖飲X / 爆纖錠" list="productList">
+                <datalist id="productList">
+                    <option>纖纖飲X</option><option>爆纖錠</option><option>纖飄錠</option>
+                    <option>纖酵宿</option><option>紫纖飲</option><option>肽纖飲</option>
+                    <option>厚奶茶</option><option>洗髮露</option><option>養髮液</option>
+                    <option>水光錠</option><option>婕肌零</option><option>雪聚露</option>
+                    <option>玻尿酸</option><option>小白瓶</option>
+                </datalist>
+            </div>
+            <div class="form-group">
+                <label>👥 客戶類型</label>
+                <select id="customerType">
+                    <option value="新客">🆕 新客</option>
+                    <option value="回購">🔄 回購</option>
+                    <option value="VIP">⭐ VIP</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="flex-row">
+            <div class="form-group">
+                <label>📝 服務備註 (問題/處理)</label>
+                <input type="text" id="serviceNote" placeholder="例如：產品使用諮詢 / 退換貨 / 保固" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label>⭐ 服務滿意度</label>
+                <select id="satisfaction">
+                    <option value="❤️ 非常滿意">❤️ 非常滿意</option>
+                    <option value="👍 滿意">👍 滿意</option>
+                    <option value="😐 普通">😐 普通</option>
+                    <option value="😞 待加強">😞 待加強</option>
+                </select>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 8px;">
+            <button id="addServiceBtn">➕ 新增售後服務紀錄</button>
+            <button id="resetFormBtn" class="btn-outline" type="button">🗑️ 清空表單</button>
+        </div>
+    </div>
+
+    <!-- 搜尋與過濾列 -->
+    <div class="card">
+        <div class="search-bar">
+            <span>🔍</span>
+            <input type="text" id="searchInput" placeholder="搜尋客戶姓名、產品或備註..." style="flex:1">
+            <button id="clearSearchBtn" class="btn-outline" style="width:auto;">清除</button>
+        </div>
+        <div class="stats">
+            <span>📋 總服務筆數: <strong id="totalCount">0</strong></span>
+            <span>🆕 新客: <strong id="newCount">0</strong></span>
+            <span>🔄 回購: <strong id="repeatCount">0</strong></span>
+        </div>
+    </div>
+
+    <!-- 售後服務列表 -->
+    <div class="card">
+        <h2>📋 服務紀錄清單</h2>
+        <div id="serviceListContainer" class="record-list">
+            <div class="empty-msg">✨ 尚無售後服務紀錄，請新增客戶服務</div>
+        </div>
+    </div>
+
+    <!-- 🎮 好玩小遊戲卡片：奶茶點點樂 -->
+    <div class="card">
+        <h2><span>🎮</span> 奶茶點點樂｜療癒小遊戲</h2>
+        <div class="sub">點擊奶茶杯收集快樂，每一杯都加分！</div>
+        <div class="game-area">
+            <div class="bubble" id="clickableBubble">🧋</div>
+            <div>
+                <div class="game-score" id="gameScore">0</div>
+                <div class="game-highscore">🏆 最高紀錄：<span id="highScore">0</span> 杯</div>
+            </div>
+            <div style="display: flex; gap: 12px; justify-content: center; margin-top: 12px;">
+                <button id="resetGameBtn" class="btn-outline" style="width: auto;">🔄 重置分數</button>
+            </div>
+            <div style="margin-top: 12px; font-size: 0.75rem; color: #BC9A7A;">
+                💡 快速點擊奶茶杯，每次+1分，累積你的療癒時光！
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ======================= 售後服務核心邏輯 =======================
+    let serviceRecords = [];
+
+    // DOM 元素
+    const serviceDateInput = document.getElementById('serviceDate');
+    const purchaseDateInput = document.getElementById('purchaseDate');
+    const customerNameInput = document.getElementById('customerName');
+    const customerPhoneInput = document.getElementById('customerPhone');
+    const productNameInput = document.getElementById('productName');
+    const customerTypeSelect = document.getElementById('customerType');
+    const serviceNoteInput = document.getElementById('serviceNote');
+    const satisfactionSelect = document.getElementById('satisfaction');
+    const addBtn = document.getElementById('addServiceBtn');
+    const resetFormBtn = document.getElementById('resetFormBtn');
+    const searchInput = document.getElementById('searchInput');
+    const clearSearchBtn = document.getElementById('clearSearchBtn');
+    const serviceListContainer = document.getElementById('serviceListContainer');
+    const totalCountSpan = document.getElementById('totalCount');
+    const newCountSpan = document.getElementById('newCount');
+    const repeatCountSpan = document.getElementById('repeatCount');
+
+    // 取得今天日期字串 YYYY-MM-DD
+    function getTodayStr() {
+        const d = new Date();
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    // 初始化日期欄位
+    function initDates() {
+        const today = getTodayStr();
+        serviceDateInput.value = today;
+        purchaseDateInput.value = today;
+    }
+
+    // 儲存到 localStorage
+    function saveToLocalStorage() {
+        localStorage.setItem('serviceApp_records', JSON.stringify(serviceRecords));
+    }
+
+    // 載入資料
+    function loadFromLocalStorage() {
+        const raw = localStorage.getItem('serviceApp_records');
+        if (raw) {
+            try {
+                serviceRecords = JSON.parse(raw);
+            } catch(e) { console.warn(e); serviceRecords = []; }
+        } else {
+            if(serviceRecords.length === 0) insertSampleDataIfEmpty();
+        }
+        renderServiceList();
+        updateStats();
+    }
+
+    // 更新統計數字
+    function updateStats() {
+        const total = serviceRecords.length;
+        const newCustomers = serviceRecords.filter(r => r.customerType === '新客').length;
+        const repeatCustomers = serviceRecords.filter(r => r.customerType === '回購').length;
+        totalCountSpan.innerText = total;
+        newCountSpan.innerText = newCustomers;
+        repeatCountSpan.innerText = repeatCustomers;
+    }
+
+    // 渲染服務列表 (支援搜尋)
+    function renderServiceList() {
+        const keyword = searchInput.value.trim().toLowerCase();
+        let filtered = [...serviceRecords];
+        if (keyword !== '') {
+            filtered = serviceRecords.filter(record => 
+                record.customerName.toLowerCase().includes(keyword) ||
+                record.product.toLowerCase().includes(keyword) ||
+                (record.serviceNote && record.serviceNote.toLowerCase().includes(keyword)) ||
+                (record.customerPhone && record.customerPhone.includes(keyword))
+            );
+        }
+
+        if (filtered.length === 0) {
+            serviceListContainer.innerHTML = `<div class="empty-msg">${keyword ? '🔍 找不到符合的紀錄' : '📭 尚無售後服務紀錄，請新增客戶服務'}</div>`;
+            return;
+        }
+
+        let html = '';
+        filtered.forEach(record => {
+            const serviceDate = record.serviceDate || '未填';
+            const purchaseDate = record.purchaseDate || '未填';
+            const satisfactionIcon = record.satisfaction ? record.satisfaction : '👍 滿意';
+            let typeIcon = '';
+            if (record.customerType === '新客') typeIcon = '🆕';
+            else if (record.customerType === '回購') typeIcon = '🔄';
+            else typeIcon = '⭐';
+            
+            html += `
+                <div class="record-item" data-id="${record.id}">
+                    <div class="record-header">
+                        <div class="customer-name">${escapeHtml(record.customerName)} ${record.customerPhone ? `📞 ${escapeHtml(record.customerPhone)}` : ''}</div>
+                        <div class="service-badge">${typeIcon} ${escapeHtml(record.customerType)}</div>
+                    </div>
+                    <div class="record-details">
+                        <span>📅 服務: ${serviceDate}</span>
+                        <span>🛒 購買: ${purchaseDate}</span>
+                        <span>🏷️ ${escapeHtml(record.product)}</span>
+                        <span>📝 ${escapeHtml(record.serviceNote) || '無備註'}</span>
+                        <span>⭐ ${escapeHtml(satisfactionIcon)}</span>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; margin-top: 8px;">
+                        <button class="delete-btn" data-id="${record.id}">刪除紀錄</button>
+                    </div>
+                </div>
+            `;
+        });
+        serviceListContainer.innerHTML = html;
+
+        // 綁定刪除按鈕事件
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const id = Number(btn.getAttribute('data-id'));
+                if (confirm('確定要刪除此筆售後服務紀錄嗎？')) {
+                    serviceRecords = serviceRecords.filter(r => r.id !== id);
+                    saveToLocalStorage();
+                    renderServiceList();
+                    updateStats();
+                }
+            });
+        });
+    }
+
+    // 新增售後服務紀錄
+    function addServiceRecord() {
+        const serviceDate = serviceDateInput.value;
+        if (!serviceDate) {
+            alert('請填寫服務日期');
+            return;
+        }
+        const purchaseDate = purchaseDateInput.value;
+        if (!purchaseDate) {
+            alert('請填寫原購買日期');
+            return;
+        }
+        const customerName = customerNameInput.value.trim();
+        if (!customerName) {
+            alert('請填寫客戶姓名');
+            return;
+        }
+        const product = productNameInput.value.trim();
+        if (!product) {
+            alert('請填寫購買產品名稱');
+            return;
+        }
+        const customerType = customerTypeSelect.value;
+        const customerPhone = customerPhoneInput.value.trim();
+        const serviceNote = serviceNoteInput.value.trim() || '';
+        const satisfaction = satisfactionSelect.value;
+
+        const newRecord = {
+            id: Date.now(),
+            serviceDate: serviceDate,
+            purchaseDate: purchaseDate,
+            customerName: customerName,
+            customerPhone: customerPhone,
+            product: product,
+            customerType: customerType,
+            serviceNote: serviceNote,
+            satisfaction: satisfaction,
+            createdAt: new Date().toISOString()
+        };
+        serviceRecords.unshift(newRecord);
+        saveToLocalStorage();
+        
+        // 清空表單部分欄位
+        customerNameInput.value = '';
+        customerPhoneInput.value = '';
+        productNameInput.value = '';
+        serviceNoteInput.value = '';
+        serviceDateInput.value = getTodayStr();
+        customerTypeSelect.value = '新客';
+        satisfactionSelect.value = '❤️ 非常滿意';
+        
+        renderServiceList();
+        updateStats();
+        
+        const btn = addBtn;
+        const originalText = btn.innerText;
+        btn.innerText = '✓ 已新增';
+        setTimeout(() => { btn.innerText = originalText; }, 1000);
+    }
+
+    // 清空表單欄位
+    function resetForm() {
+        customerNameInput.value = '';
+        customerPhoneInput.value = '';
+        productNameInput.value = '';
+        serviceNoteInput.value = '';
+        serviceDateInput.value = getTodayStr();
+        purchaseDateInput.value = getTodayStr();
+        customerTypeSelect.value = '新客';
+        satisfactionSelect.value = '❤️ 非常滿意';
+    }
+
+    function clearSearch() {
+        searchInput.value = '';
+        renderServiceList();
+    }
+
+    function bindSearchEvent() {
+        searchInput.addEventListener('input', () => renderServiceList());
+        clearSearchBtn.addEventListener('click', clearSearch);
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // 初次使用時加入範例資料
+    function insertSampleDataIfEmpty() {
+        if (serviceRecords.length === 0) {
+            const sample = [
+                {
+                    id: Date.now() + 1,
+                    serviceDate: '2025-03-10',
+                    purchaseDate: '2025-02-20',
+                    customerName: '林雅惠',
+                    customerPhone: '0912-345-678',
+                    product: '纖纖飲X',
+                    customerType: '回購',
+                    serviceNote: '詢問飲用方式，已提供教學影片',
+                    satisfaction: '❤️ 非常滿意'
+                },
+                {
+                    id: Date.now() + 2,
+                    serviceDate: '2025-03-15',
+                    purchaseDate: '2025-03-01',
+                    customerName: '張志強',
+                    customerPhone: '0922-333-111',
+                    product: '爆纖錠',
+                    customerType: '新客',
+                    serviceNote: '商品外包裝輕微破損，已協助換貨',
+                    satisfaction: '👍 滿意'
+                },
+                {
+                    id: Date.now() + 3,
+                    serviceDate: '2025-03-18',
+                    purchaseDate: '2025-03-10',
+                    customerName: '李采恩',
+                    customerPhone: '',
+                    product: '水光錠',
+                    customerType: 'VIP',
+                    serviceNote: '產品效果諮詢，建議搭配保養',
+                    satisfaction: '❤️ 非常滿意'
+                }
+            ];
+            serviceRecords.push(...sample);
+            saveToLocalStorage();
+        }
+    }
+
+    // ======================= 奶茶小遊戲邏輯 =======================
+    let currentScore = 0;
+    let highScore = 0;
+
+    const gameScoreSpan = document.getElementById('gameScore');
+    const highScoreSpan = document.getElementById('highScore');
+    const clickableBubble = document.getElementById('clickableBubble');
+    const resetGameBtn = document.getElementById('resetGameBtn');
+
+    // 載入遊戲紀錄
+    function loadGameData() {
+        const savedScore = localStorage.getItem('milkTeaGame_score');
+        const savedHigh = localStorage.getItem('milkTeaGame_high');
+        if (savedScore !== null) currentScore = parseInt(savedScore) || 0;
+        if (savedHigh !== null) highScore = parseInt(savedHigh) || 0;
+        gameScoreSpan.innerText = currentScore;
+        highScoreSpan.innerText = highScore;
+    }
+
+    // 儲存遊戲分數
+    function saveGameData() {
+        localStorage.setItem('milkTeaGame_score', currentScore);
+        if (currentScore > highScore) {
+            highScore = currentScore;
+            localStorage.setItem('milkTeaGame_high', highScore);
+            highScoreSpan.innerText = highScore;
+            showFloatingText('🎉 新紀錄！ 🎉', '#D9B48B');
+        }
+    }
+
+    // 產生漂浮文字特效 (相對於點擊位置)
+    function showFloatingText(text, color = '#D9B48B', clientX = null, clientY = null) {
+        const div = document.createElement('div');
+        div.innerText = text;
+        div.className = 'click-feedback';
+        div.style.color = color;
+        const x = (clientX !== null) ? clientX : window.innerWidth/2;
+        const y = (clientY !== null) ? clientY : window.innerHeight/2;
+        div.style.left = x + 'px';
+        div.style.top = y + 'px';
+        document.body.appendChild(div);
+        setTimeout(() => { div.remove(); }, 600);
+    }
+
+    // 點擊奶茶加分 (支援滑鼠與觸控)
+    function handleClickGame(e) {
+        let clientX, clientY;
+        if (e.touches) {
+            // 觸控事件
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+            e.preventDefault();
+        } else {
+            clientX = e.clientX;
+            clientY = e.clientY;
+        }
+        
+        currentScore++;
+        gameScoreSpan.innerText = currentScore;
+        saveGameData();
+        
+        // 視覺回饋
+        clickableBubble.style.transform = 'scale(0.95)';
+        setTimeout(() => { clickableBubble.style.transform = ''; }, 100);
+        
+        // 漂浮 +1 特效
+        showFloatingText('+1', '#E6A157', clientX, clientY);
+    }
+
+    // 重置遊戲分數
+    function resetGame() {
+        if (confirm('確定要將奶茶遊戲分數歸零嗎？最高紀錄將會保留。')) {
+            currentScore = 0;
+            gameScoreSpan.innerText = currentScore;
+            localStorage.setItem('milkTeaGame_score', currentScore);
+            showFloatingText('分數已歸零', '#9B7B5C');
+        }
+    }
+
+    // 綁定遊戲事件 (同時支援 mouse 和 touch)
+    function initGame() {
+        loadGameData();
+        clickableBubble.addEventListener('click', handleClickGame);
+        clickableBubble.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            handleClickGame(e);
+        });
+        resetGameBtn.addEventListener('click', resetGame);
+    }
+
+    // ======================= 初始化整體應用 =======================
+    function init() {
+        initDates();
+        loadFromLocalStorage();
+        if (serviceRecords.length === 0) {
+            insertSampleDataIfEmpty();
+            renderServiceList();
+            updateStats();
+        }
+        bindSearchEvent();
+        addBtn.addEventListener('click', addServiceRecord);
+        resetFormBtn.addEventListener('click', resetForm);
+        initGame();
+    }
+    init();
+</script>
+</body>
+</html>
